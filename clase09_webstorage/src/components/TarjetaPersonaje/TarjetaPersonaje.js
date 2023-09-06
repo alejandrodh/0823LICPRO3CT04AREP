@@ -26,18 +26,43 @@ class TarjetaPersonaje extends Component {
         }
     }
 
+    //Si el id está en el array debe sacarlo.
+    //Si el id NO ESTÁ en el array debe agregarlo.
+    
     agergarYSacarDeFavs(id){
         //Guardar un id en un array y luego en localStorage
         let favoritos = [];
-        favoritos.push(id);
+        let recuperoStorage = localStorage.getItem('favoritos');
+
+        if (recuperoStorage !== null){
+            favoritos = JSON.parse(recuperoStorage);
+        }
+
+        if(favoritos.includes(id)){
+            //Si el id está en el array. ¿Qué tenemos que hacer?
+            //Sacarlo del array.
+            favoritos = favoritos.filter( unId => unId !== id)
+
+            //Mostrarle un cambio al usuario en la pantalla.
+            this.setState({
+                textoBoton : "Agregar a favoritos"
+            })
+
+        } else {
+            //Si el id NO ESTÁ en el array. ¿Qué tenemos que hacer?
+            favoritos.push(id);
+    
+            this.setState({
+                textoBoton: "Quitar de favoritos",
+            })
+
+        }
 
         //Guardar en localStorage
         let favoritosToString = JSON.stringify(favoritos);        
         localStorage.setItem('favoritos', favoritosToString);
 
-        this.setState({
-            textoBoton: "Quitar de favoritos",
-        })
+        console.log(localStorage);
 
     }
 
