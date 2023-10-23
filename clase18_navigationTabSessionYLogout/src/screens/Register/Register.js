@@ -1,5 +1,5 @@
 import react, { Component } from 'react';
-import { auth } from '../../firebase/config';
+import { db, auth } from '../../firebase/config';
 import {TextInput, TouchableOpacity, View, Text, StyleSheet} from 'react-native';
 
 class Register extends Component {
@@ -26,13 +26,21 @@ class Register extends Component {
 
     }
 
-    register (email, pass){
+    register (email, pass, userName){
         auth.createUserWithEmailAndPassword(email, pass)
             .then( response => {
                 //Cuando firebase responde sin error
                 console.log('Registrado ok', response);
 
                  //Cambiar los estados a vacío como están al inicio.
+
+                //Crear una colección Users
+                db.collection('users').add({
+                    owner:auth.currentUser.email,
+                    userName: userName,
+                    createdAt: Date.now(),
+                })
+                .then( res => console.log(res))
 
             })
             .catch( error => {
@@ -68,7 +76,7 @@ class Register extends Component {
                     secureTextEntry={true}
                     value={this.state.password}
                 />
-                <TouchableOpacity style={styles.button} onPress={()=>this.register(this.state.email, this.state.password)}>
+                <TouchableOpacity style={styles.button} onPress={()=>this.register(this.state.email, this.state.password, this.state.userName)}>
                     <Text style={styles.textButton}>Registrarse</Text>    
                 </TouchableOpacity>
                 <TouchableOpacity onPress={ () => this.props.navigation.navigate('Login')}>

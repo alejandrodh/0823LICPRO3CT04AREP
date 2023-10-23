@@ -25,6 +25,12 @@ class Home extends Component {
                 <TouchableOpacity onPress={()=>this.logout()}>
                     <Text>Logout</Text>
                 </TouchableOpacity>
+               
+                <Text>//Importar form para crear Post</Text>
+                
+
+                <Text>//Agrear FlatList para mostrar los posteos creados</Text>
+
             </View>
         )
     }
