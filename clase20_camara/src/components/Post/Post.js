@@ -58,10 +58,10 @@ class Post extends Component {
     render(){
         console.log(this.props)
         return (
-            <View>
-                <Text>{ this.props.dataPost.datos.owner }</Text>
-                <Text>{ this.props.dataPost.datos.textoPost }</Text>
-                <Text>Cantidad de Likes:{ this.state.cantidadDeLikes }</Text>
+            <View style={styles.postContainer}>
+                <Text>Creado por: { this.props.dataPost.datos.owner }</Text>
+                <Text>texto: { this.props.dataPost.datos.textoPost }</Text>
+                <Text>Cantidad de Likes: { this.state.cantidadDeLikes }</Text>
                 {
                     this.state.like ?
                         <TouchableOpacity style={styles.button} onPress={()=>this.unlike()}>
@@ -88,9 +88,11 @@ class Post extends Component {
 }
 
 const styles = StyleSheet.create({
-    formContainer:{
+    postContainer:{
         paddingHorizontal:10,
         marginTop: 20,
+        marginHorizontal:10,
+        marginBottom:20
     },
     input:{
         height:20,

@@ -17,6 +17,7 @@ class PostForm extends Component {
         db.collection('posts').add({
             owner: owner, //auth.currentUser.email,
             textoPost: textoPost, //this.state.textoPost,
+            likes:[],
             createdAt: createdAt //Date.now(), 
         })
         .then( res => console.log(res))
@@ -27,9 +28,8 @@ class PostForm extends Component {
     render(){
         return(
             <View style={styles.formContainer}>
-                <Text>Aca debajo está la cámara</Text>
-                <MyCamera />
                 <Text>New Post</Text>
+                <MyCamera />
                 <TextInput
                     style={styles.input}
                     onChangeText={(text)=>this.setState({textoPost: text})}
@@ -49,6 +49,12 @@ const styles = StyleSheet.create({
     formContainer:{
         paddingHorizontal:10,
         marginTop: 20,
+        marginBottom: 40,
+        marginHorizontal:30,
+        padding: 10,
+        borderWidth: 1,
+        borderColor: "#ccc",
+        borderRadius: 6,
     },
     input:{
         height:20,

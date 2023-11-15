@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {Camera} from 'expo-camera';
 import {db, storage} from '../../firebase/config';
-import { TouchableOpacity, View, Text } from 'react-native';
+import { TouchableOpacity, View, Text, StyleSheet } from 'react-native';
 
 class MyCamera extends Component{
     constructor(props){
@@ -38,19 +38,66 @@ class MyCamera extends Component{
     render(){
         //El return tiene que mostrar la cámara o el preview de la foto con las opciones de cancelar o confirmar.
         return(
-            <View>
+            <View style={ styles.container}>
                 <Camera
-                    //style={}
+                    style = { styles.cameraBody }
                     type={ Camera.Constants.Type.front}
                     ref={ metedosDeCamara => this.metedosDeCamara = metedosDeCamara}
                 />
-                <TouchableOpacity onPress={()=>this.sacarFoto()}>
-                    <Text>Sacar Foto</Text>
+                <TouchableOpacity style = { styles.button } onPress={()=>this.sacarFoto()}>
+                    <Text style = { styles.textButton }>Sacar Foto</Text>
                 </TouchableOpacity>
             </View>
         )
     }
 
 }
+
+const styles = StyleSheet.create({
+    container:{
+        height:"45vh",
+        marginBottom: 20,
+        marginHorizontal:5,
+        padding: 10,
+        
+    },
+    cameraBody: {
+      marginTop: 20,
+      marginBottom: 10,
+      height:"40vh",
+    },
+    button:{
+        backgroundColor:'#28a745',
+        paddingHorizontal: 10,
+        paddingVertical: 6,
+        textAlign: 'center',
+        borderRadius:4, 
+        borderWidth:1,
+        borderStyle: 'solid',
+        borderColor: '#28a745'
+    },
+    textButton:{
+        color: '#fff',
+        textAlign: "center"
+    },
+    confirm:{
+        flexDirection:"row",
+        justifyContent: "space-between"
+    },
+    confirmButton:{
+        backgroundColor:'#28a745',
+        paddingHorizontal: 10,
+        paddingVertical: 6,
+        textAlign: 'center',
+        borderRadius:4, 
+    },
+    cancelButton:{
+        backgroundColor:'#dc3545',
+        paddingHorizontal: 10,
+        paddingVertical: 6,
+        textAlign: 'center',
+        borderRadius:4, 
+    }
+})
 
 export default MyCamera
