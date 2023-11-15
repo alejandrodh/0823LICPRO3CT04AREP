@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {Camera} from 'expo-camera';
 import {db, storage} from '../../firebase/config';
-import { TouchableOpacity, View, Text, StyleSheet } from 'react-native';
+import { TouchableOpacity, View, Text, StyleSheet, Image } from 'react-native';
 
 class MyCamera extends Component{
     constructor(props){
@@ -27,10 +27,48 @@ class MyCamera extends Component{
     }
 
     sacarFoto(){
+        console.log("Sacando la foto...");
+
+        this.metedosDeCamara.takePictureAsync()
+            .then( photo => {
+                this.setState({
+                    urlInternaFoto: photo.uri, //url interna de la foto.
+                    mostrarLaCamara: false,
+                })
+            })
+            .catch( e => console.log(e))
 
     }
 
+    cancelar(){
+        console.log("Cancelando...");
+        this.setState({
+            urlInternaFoto: '',
+            mostrarLaCamara: true,
+        })
+    }
+
     guardarLaFotoEnStorage(){
+        fetch(this.state.urlInternaFoto)
+            .then( res => res.blob())
+            .then( image => {
+                const ruta = storage.ref(`photos/${Date.now()}.jpg`); //storage retorna un Objeto Literal
+                ruta.put( image )
+                    .then( () => {
+                        ruta.getDownloadURL() //la url de guardado en internet de la foto.
+                            .then( url => { //url en internet
+
+                                //Pasarle la info de la url al formulario de Posteo.
+                                this.props.trearUrlDelaFoto(url);
+                                this.setState({
+                                    urlInternaFoto: ''
+                                })
+                            })
+                    })
+
+
+            })
+            .catch(e=>console.log(e))
 
     }
 
@@ -39,14 +77,42 @@ class MyCamera extends Component{
         //El return tiene que mostrar la cámara o el preview de la foto con las opciones de cancelar o confirmar.
         return(
             <View style={ styles.container}>
-                <Camera
-                    style = { styles.cameraBody }
-                    type={ Camera.Constants.Type.front}
-                    ref={ metedosDeCamara => this.metedosDeCamara = metedosDeCamara}
-                />
-                <TouchableOpacity style = { styles.button } onPress={()=>this.sacarFoto()}>
-                    <Text style = { styles.textButton }>Sacar Foto</Text>
-                </TouchableOpacity>
+
+                {
+                    this.state.permisosDeHardware === true ?
+                        this.state.mostrarLaCamara === false ?
+                        <React.Fragment>
+                            <Image 
+                                source={{uri:this.state.urlInternaFoto}}
+                                style={ styles.cameraBody}
+                            />
+                            <View style={styles.confirm}>
+                                <TouchableOpacity style={styles.cancelButton} onPress={()=>this.cancelar()}>
+                                    <Text style={styles.textButton}>Cancelar</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity style={styles.confirmButton} onPress={()=>this.guardarLaFotoEnStorage()}>
+                                    <Text style={styles.textButton}>Aceptar</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </React.Fragment>
+
+                        :
+                        <React.Fragment>
+                            <Camera
+                                style = { styles.cameraBody }
+                                type={ Camera.Constants.Type.front}
+                                ref={ metedosDeCamara => this.metedosDeCamara = metedosDeCamara}
+                            />
+                            <TouchableOpacity style = { styles.button } onPress={()=>this.sacarFoto()}>
+                                <Text style = { styles.textButton }>Sacar Foto</Text>
+                            </TouchableOpacity> 
+                        </React.Fragment>
+                        :
+                        <Text>La cámara no tiene permisos para ser usada</Text>
+                }
+
+
+
             </View>
         )
     }
